@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>Swift 3.0 GCD常用的方法 | VitoByChen的小巢</title>
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="记录自己的成长过程">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Swift 3.0 GCD常用的方法 | VitoByChen的小巢">
+    <meta name="twitter:description" content="记录自己的成长过程">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Swift 3.0 GCD常用的方法 | VitoByChen的小巢">
+    <meta property="og:description" content="记录自己的成长过程">
+
+    
+    <meta name="author" content="VitoByChen">
+    
+    <link rel="stylesheet" href="/css/vno.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
+    
+    <link rel="icon" href="/images/avatar-small.png">
+    
+
+    <meta name="generator" content="hexo"/>
+    
+    <link rel="alternate" type="application/rss+xml" title="VitoByChen的小巢" href="/atom.xml">
+    
+
+    <link rel="canonical" href="http://yoursite.com/2017/04/27/Swift 3.0 GCD常用的方法/"/>
+
+    
+      
+</head>
+
+<body class="home-template no-js">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+
+    
+<header class="panel-cover panel-cover--collapsed" style="background-image: url(/images/background-cover.jpg)">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/" title="前往 VitoByChen的小巢 的主页"><img src="/images/avatar.jpg" width="80" alt="VitoByChen的小巢 logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage for VitoByChen的小巢">VitoByChen的小巢</a></h1>
+        
+        <span class="panel-cover__subtitle panel-subtitle">属于自己的一寸阳光</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">记录自己的成长过程</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+
+        <div class="navigation-wrapper">
+          <div>
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="访问博客" class="blog-button">博客</a></li>
+            
+              <li class="navigation__item"><a href="/favourite">黄金屋</a></li>
+            
+              <li class="navigation__item"><a href="/favourite/time.html">时光机</a></li>
+            
+              <li class="navigation__item"><a href="/aboutme">关于我</a></li>
+            
+            </ul>
+          </nav>
+          </div>
+          <div>
+          <nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  <!-- Weibo-->
+  
+
+  <!-- Github -->
+  
+  <li class="navigation__item">
+    <a href="https://github.com/VitoByChen" title="查看我的GitHub主页" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+
+
+<!-- Stack Overflow -->
+        
+
+  <!-- Google Plus -->
+  
+
+<!-- Facebook -->
+
+  
+<!-- Twitter -->
+
+  
+
+  <li class="navigation__item">
+    <a href="/atom.xml" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+
+
+  </ul>
+</nav>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay cover-purple"></div>
+  </div>
+</header>
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single">
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2017-04-27T08:41:05.000Z" class="post-list__meta--date date">2017-04-27</time> &#8226; <span class="post-meta__tags tags">于&nbsp; </span>
+      <span class="page-pv">
+      &nbsp;阅读&nbsp;<span id="busuanzi_value_page_pv"><i class="fa fa-spinner fa-spin"></i></span>
+      </span> 
+   
+    </div>
+    <h1 class="post-title">Swift 3.0 GCD常用的方法</h1>
+  </header>
+
+  <section class="post">
+    <p>####导语:</p>
+<blockquote>
+<p>随着最近苹果推出<code>Swift 3.0</code> 觉得不能把Swift丢下了,就赶在最近学了一下Swift, 然后把<code>Swift 3.0</code> GCD 部分稍微的总结一下</p>
+</blockquote>
+<p>为了方便我定义了几个属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">class ViewController:UIViewController&#123;  </div><div class="line">    /**队列*/  </div><div class="line">  var myQueue:DispatchQueue?   </div><div class="line">  var myQueueTimer:DispatchQueue?  </div><div class="line">  var mnytimer:DispatchSourceTimer?   </div><div class="line">  var myGroup:DispatchGroup?   </div><div class="line">  var mySource:DispatchSource?  </div><div class="line">  override fun viewDidLoad() &#123;  </div><div class="line">     super.viewDidLoad()       </div><div class="line">    GCDTest1()      </div><div class="line">    GCDTest8()    </div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>####定义队列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">//MARK: - 创建队列</div><div class="line">        //1.</div><div class="line">        myQueue = DispatchQueue(label: &quot;第一条线程&quot;)</div><div class="line">        </div><div class="line">/*</div><div class="line"> - parameter  qos:DispatchQoS</div><div class="line">         线程的策略</div><div class="line">        case background  //后台</div><div class="line">        </div><div class="line">        case utility     //公共的</div><div class="line">        </div><div class="line">        case `default`    //默认的</div><div class="line">        </div><div class="line">        case userInitiated  //用户期望优先级（不要放太耗时的操作）</div><div class="line">        </div><div class="line">        case userInteractive  //用户交互(跟主线程一样)</div><div class="line">        </div><div class="line">        case unspecified    //不指定</div><div class="line"> */</div><div class="line">         //2.</div><div class="line">        myQueue = DispatchQueue(label: &quot;第二条线程&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .workItem, target: nil)</div><div class="line">   ```     </div><div class="line">创建好的队列执行任务</div></pre></td></tr></table></figure></p>
+<pre><code>myQueue?.sync(execute: { 
+    print(&quot;执行同步任务&quot;)
+})
+
+myQueue?.async(execute: { 
+    print(&quot;执行异步任务&quot;)
+})
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">串行执行队列</div></pre></td></tr></table></figure>
+<pre><code> myQueue?.async {
+    for _ in 0...10 {
+        print(&quot;aaaaaaa&quot;);
+    }
+
+}
+myQueue?.async {
+    for _ in 0...10 {
+        print(&quot;bbbbbbb&quot;);
+    }
+}
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">接下来是GCD常用的用法</div><div class="line">1. 开线程异步执行完耗时代码返回主线程刷新UI</div></pre></td></tr></table></figure>
+</code></pre><p> func GCDTest2() {<br>    /<em>*1. 开线程异步执行完耗时代码返回主线程刷新UI</em>/<br>        DispatchQueue.global().async {<br>            print(“开一条全局队列异步执行任务”)</p>
+<pre><code>        DispatchQueue.main.async {
+            print(&quot;在主队列执行任务&quot;)
+        }
+    }
+}
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">```</div><div class="line">2. 等待异步执行多个任务后, 再执行下一个任务</div><div class="line"></div><div class="line">等待异步执行多个任务后, 再执行下一个任务*/</div><div class="line">    func GCDTest3() &#123;</div><div class="line">        </div><div class="line">        myQueue?.async &#123;//任务一</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                print(&quot;......&quot;)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        myQueue?.async &#123;//任务二</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                print(&quot;++++++&quot;);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        // barrier 会等待上面执行完毕再执行下面的，会阻塞当前线程</div><div class="line">        //        myQueue?.async(flags:.barrier ,execute: &#123;//1.</div><div class="line">        //            print(&quot;000000&quot;)</div><div class="line">        //        &#125;)</div><div class="line">        </div><div class="line">        myQueue?.async(group: nil, qos: .default, flags: .barrier, execute: &#123;//2.</div><div class="line">            print(&quot;000000&quot;)</div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">        myQueue?.async &#123;</div><div class="line">            print(&quot;111111&quot;)</div><div class="line">        &#125;</div><div class="line">        /* 打印的结果</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         ++++++</div><div class="line">         ......</div><div class="line">         000000</div><div class="line">         111111</div><div class="line">         */</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p> 延时提交任务<br>func GCDTest4() {<br>        //主队列<br>       DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 10) {<br>        print(“延时提交的任务”)<br>        }</p>
+<pre><code>    //指定队列
+    myQueue?.asyncAfter(deadline: DispatchTime.now() + 10, execute: {
+        print(&quot;延时提交的任务&quot;)
+    })
+}
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">```</div><div class="line">信号量:</div><div class="line"></div><div class="line">  func GCDTest5() &#123;</div><div class="line">        //初始化信号量, 计数为三</div><div class="line">    let mySemaphore = DispatchSemaphore(value: 3)</div><div class="line">        for i in 0...10 &#123;</div><div class="line">            print(i)</div><div class="line">//            let _ = mySemaphore.wait()  //获取信号量，信号量减1，为0时候就等待,会阻碍当前线程</div><div class="line">            let _ = mySemaphore.wait(timeout: DispatchTime.now() + 2.0) //阻碍时等两秒信号量还是为0时将不再等待, 继续执行下面的代码</div><div class="line">            myQueue?.async &#123;</div><div class="line">                for j in 0...4 &#123;</div><div class="line">                 print(&quot;有限资源\(j)&quot;)</div><div class="line">                sleep(UInt32(3.0))</div><div class="line">                &#125;</div><div class="line">                print(&quot;-------------------&quot;)</div><div class="line">            mySemaphore.signal()</div><div class="line">            &#125;</div><div class="line">            </div><div class="line">        &#125;</div><div class="line">    </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>信号量的说明:<br>GCD 信号量控制并发 （dispatch_semaphore）<br>     当我们在处理一系列线程的时候，当数量达到一定量，在以前我们可能会选择使用NSOperationQueue来处理并发控制，但如何在GCD中快速的控制并发呢？答案就是dispatch_semaphore。<br>     信号量是一个整形值并且具有一个初始计数值，并且支持两个操作：信号通知和等待。当一个信号量被信号通知，其计数会被增加。当一个线程在一个信号量上等待时，线程会被阻塞（如果有必要的话），直至计数器大于零，然后线程会减少这个计数。<br>     在GCD中有三个函数是semaphore的操作，分别是：<br>     1、dispatch_semaphore_create　　　创建一个semaphore<br>     2、dispatch_semaphore_signal　　　发送一个信号<br>     3、dispatch_semaphore_wait　　　　等待信号</p>
+<pre><code>下面我们逐一介绍三个函数：
+
+（1）dispatch_semaphore_create的声明为：
+　　dispatch_semaphore_t dispatch_semaphore_create(long value);
+　　传入的参数为long，输出一个dispatch_semaphore_t类型且值为value的信号量。值得注意的是，这里的传入的参数value必须大于或等于0，否则dispatch_semaphore_create会返回NULL。
+
+（2）dispatch_semaphore_signal的声明为：
+　　long dispatch_semaphore_signal(dispatch_semaphore_t dsema)这个函数会使传入的信号量dsema的值加1；（至于返回值，待会儿再讲）
+
+(3) dispatch_semaphore_wait的声明为：
+　　long dispatch_semaphore_wait(dispatch_semaphore_t dsema, dispatch_time_t timeout)；
+这个函数会使传入的信号量dsema的值减1。这个函数的作用是这样的，如果dsema信号量的值大于0，该函数所处线程就继续执行下面的语句，并且将信号量的值减1；如果desema的值为0，那么这个函数就阻塞当前线程等待timeout（注意timeout的类型为dispatch_time_t，不能直接传入整形或float型数），如果等待的期间desema的值被dispatch_semaphore_signal函数加1了，且该函数（即dispatch_semaphore_wait）所处线程获得了信号量，那么就继续向下执行并将信号量减1。如果等待期间没有获取到信号量或者信号量的值一直为0，那么等到timeout时，其所处线程自动执行其后语句。
+
+（4）dispatch_semaphore_signal的返回值为long类型，当返回值为0时表示当前并没有线程等待其处理的信号量，其处理的信号量的值加1即可。当返回值不为0时，表示其当前有（一个或多个）线程等待其处理的信号量，并且该函数唤醒了一个等待的线程（当线程有优先级时，唤醒优先级最高的线程；否则随机唤醒）。
+　　dispatch_semaphore_wait的返回值也为long型。当其返回0时表示在timeout之前，该函数所处的线程被成功唤醒。当其返回不为0时，表示timeout发生。
+
+（5）关于信号量，一般可以用停车来比喻。
+　　停车场剩余4个车位，那么即使同时来了四辆车也能停的下。如果此时来了五辆车，那么就有一辆需要等待。信号量的值就相当于剩余车位的数目，dispatch_semaphore_wait函数就相当于来了一辆车，dispatch_semaphore_signal就相当于走了一辆车。停车位的剩余数目在初始化的时候就已经指明了（dispatch_semaphore_create（long value）），调用一次dispatch_semaphore_signal，剩余的车位就增加一个；调用一次dispatch_semaphore_wait剩余车位就减少一个；当剩余车位为0时，再来车（即调用dispatch_semaphore_wait）就只能等待。有可能同时有几辆车等待一个停车位。有些车主没有耐心，给自己设定了一段等待时间，这段时间内等不到停车位就走了，如果等到了就开进去停车。而有些车主就像把车停在这，所以就一直等下去。
+</code></pre><p>重复提交任务(定时器)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">func GCDTest6() &#123;</div><div class="line">        </div><div class="line">        //      秒               毫秒                      微秒                      纳秒</div><div class="line">        //  1 seconds = 1000 milliseconds = 1000,000 microseconds = 1000,000,000 nanoseconds</div><div class="line">        myTimer = DispatchSource.makeTimerSource(flags: [], queue: myQueue)</div><div class="line">        myTimer?.scheduleRepeating(deadline: .now(), interval: .seconds(1) ,leeway:.milliseconds(100))</div><div class="line">        myTimer?.setEventHandler &#123;</div><div class="line">            print(&quot;fff&quot;)</div><div class="line">        &#125;</div><div class="line">        myTimer?.resume()</div><div class="line">//        myTimer?.cancel()</div><div class="line">//        myTimer?.activate()</div><div class="line">       </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>####接下来就是Group的用法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">1. notify(依赖任务)</div><div class="line">  //MARK: - notify(依赖任务)</div><div class="line">    func GCDTest7() &#123;</div><div class="line">      let group = DispatchGroup()</div><div class="line">        myQueue?.async(group: group, qos: .default, flags: [], execute: &#123; </div><div class="line">            for _ in 0...10 &#123;</div><div class="line">            </div><div class="line">            print(&quot;耗时任务一&quot;)</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        myQueue?.async(group: group, qos: .default, flags: [], execute: &#123;</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                </div><div class="line">                print(&quot;耗时任务二&quot;)</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        //执行完上面的两个耗时操作, 回到myQueue队列中执行下一步的任务</div><div class="line">        group.notify(queue: myQueue!) &#123;</div><div class="line">            print(&quot;回到该队列中执行&quot;)</div><div class="line">        &#125;</div><div class="line">       </div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>wait(任务等待)</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">func GCDTest8() &#123;</div><div class="line">        let group = DispatchGroup()</div><div class="line">        myQueue?.async(group: group, qos: .default, flags: [], execute: &#123;</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                </div><div class="line">                print(&quot;耗时任务一&quot;)</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        myQueue?.async(group: group, qos: .default, flags: [], execute: &#123;</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                </div><div class="line">                print(&quot;耗时任务二&quot;)</div><div class="line">                sleep(UInt32(3))</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">         //等待上面任务执行，会阻塞当前线程，超时就执行下面的，上面的继续执行。可以无限等待 .distantFuture</div><div class="line">        let result = group.wait(timeout: .now() + 2.0)</div><div class="line">        switch result &#123;</div><div class="line">        case .success:</div><div class="line">            print(&quot;不超时, 上面的两个任务都执行完&quot;)</div><div class="line">        case .timedOut:</div><div class="line">            print(&quot;超时了, 上面的任务还没执行完执行这了&quot;)</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        print(&quot;接下来的操作&quot;)</div><div class="line">        </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>enter leave 手动管理group计数,enter和leave必须配对</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">func GCDTest9() &#123;</div><div class="line">    </div><div class="line">        let group = DispatchGroup()</div><div class="line">        group.enter()//把该任务添加到组队列中执行</div><div class="line">        myQueue?.async(group: group, qos: .default, flags: [], execute: &#123;</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                </div><div class="line">                print(&quot;耗时任务一&quot;)</div><div class="line">                group.leave()//执行完之后从组队列中移除</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">         group.enter()//把该任务添加到组队列中执行</div><div class="line">        myQueue?.async(group: group, qos: .default, flags: [], execute: &#123;</div><div class="line">            for _ in 0...10 &#123;</div><div class="line">                </div><div class="line">                print(&quot;耗时任务二&quot;)</div><div class="line">                group.leave()//执行完之后从组队列中移除</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">        </div><div class="line">        //当上面所有的任务执行完之后通知</div><div class="line">        group.notify(queue: .main) &#123; </div><div class="line">            print(&quot;所有的任务执行完了&quot;)</div><div class="line">        &#125;</div><div class="line">    </div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>以上就是个人对swift 3.o GCD 的理解</p>
+
+  </section>
+
+</article>
+<section class="read-more">
+           
+    
+        
+        
+               
+            <div class="read-more-item">
+                <span class="read-more-item-dim">更早的文章</span>
+                <h2 class="post-list__post-title post-title"><a href="/2017/04/27/hello-world/" title="Hello World">Hello World</a></h2>
+                <p class="excerpt">
+                
+                Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+                &hellip;
+                </p>
+                <div class="post-list__meta"><time datetime="2017-04-27T08:41:05.000Z" class="post-list__meta--date date">2017-04-27</time> &#8226; <span class="post-list__meta--tags tags">于&nbsp;</span><a class="btn-border-small" href="/2017/04/27/hello-world/">继续阅读</a></div>
+                       
+            </div>
+        
+     
+   
+   
+  
+</section>
+
+            
+<section class="post-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'vitobychen'; 
+      
+  var disqus_identifier = '/2017/04/27/Swift 3.0 GCD常用的方法/';
+  var disqus_title = 'Swift 3.0 GCD常用的方法';
+  var disqus_url = 'http://yoursite.com/2017/04/27/Swift 3.0 GCD常用的方法/';
+  
+
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          //dsq.src = '/js/embed.js';
+          //将disqus使用https协议将大大提高显示速度
+          dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+          //dsq.src = 'https://a.disquscdn.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+            <footer class="footer">
+    <span class="footer__copyright">
+        本站点采用 <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>
+    </span>
+    <span class="footer__copyright">
+        基于 <a href="http://hexo.io">Hexo</a> 搭建，感谢 <a href="https://pages.github.com/">GitHub Pages</a> 提供免费的托管服务
+    </span>
+    <span class="footer__copyright">
+        &copy; 2017 - 本站由 <a href="/">@VitoByChen</a> 创建,
+        使用 <a href="https://github.com/monniya/hexo-theme-new-vno ">hexo-theme-new-vno</a> 主题,
+        修改自 <a href="https://github.com/lenbo-ma/hexo-theme-vno" target="_blank">Vno</a>, 原创出自<a href="http://github.com/onevcat/vno" target="_blank">onevcat</a>
+    </span>
+</footer>
+
+        </div>
+    </div>
+
+    
+
+     
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-78918255-1', 'auto');
+	ga('send', 'pageview');
+</script>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?9cdad07c755fa23f6aced510c6760e87";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    
+    </script>
+    
+</body>
+</html>
